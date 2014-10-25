@@ -25,7 +25,7 @@ for (( uid = 499;; --uid )) ; do
           dscl /Local/Default -create Groups/_$username RecordName _$username $username
 
           dscl /Local/Default -create Users/_$username
-          dscl /Local/Default -create Users/_$username NFSHomeDirectory /usr/local/
+          dscl /Local/Default -create Users/_$username NFSHomeDirectory /usr/local/$username
           dscl /Local/Default -create Users/_$username Password \*
           dscl /Local/Default -create Users/_$username PrimaryGroupID $uid
           dscl /Local/Default -create Users/_$username RealName "$realname"
@@ -35,6 +35,12 @@ for (( uid = 499;; --uid )) ; do
 
           dscl /Local/Default -delete /Users/_$username AuthenticationAuthority
           dscl /Local/Default -delete /Users/_$username PasswordPolicyOptions
+
+          #using -c was critical here, I guess given the specified node.../local/default
+          sudo createhomedir -c -u $username
+          #alternatively use:
+          #sudo cp -R /System/Library/User\ Template/English.lproj /usr/local/$username
+          #sudo chown -R $username:$username /usr/local/$username
           break
         fi
     fi
@@ -45,7 +51,7 @@ echo -e "Created system user $username (uid/gid $uid):\n"
 dscl /Local/Default -read Users/_$username
 
 echo -e "\nYou can undo the creation of this user by issuing the following commands:\n"
-echo "sudo dscl /Local/Default -delete Users/_$username"
-echo "sudo dscl /Local/Default -delete Groups/_$username"
-echo "\nThe user's home folder will not be automatically deleted, find it here:"
-echo "/usr/local/_$username"
+echo "  sudo dscl /Local/Default -delete Users/_$username"
+echo "  sudo dscl /Local/Default -delete Groups/_$username"
+echo -e "\nThe user's home folder will not be automatically deleted, find it here:\n"
+echo -e "  /usr/local/$username\n"
