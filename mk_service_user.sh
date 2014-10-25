@@ -1,5 +1,3 @@
-# answered Aug 22 2013 at 8:23, edited Jan 10 2014 at 5:37 by user: "par"
-# http://serverfault.com/questions/182347/add-daemon-account-on-os-x
 #!/bin/bash
 
 if (( $(id -u) )) ; then
@@ -17,7 +15,7 @@ realname="${2:-$username}"
 
 echo "Adding daemon user $username with real name \"$realname\""
 
-for (( uid = 500;; --uid )) ; do
+for (( uid = 499;; --uid )) ; do
     if ! id -u $uid &>/dev/null; then
         if ! dscl /Local/Default -ls Groups gid | grep -q [^0-9]$uid\$ ; then
           dscl /Local/Default -create Groups/_$username
@@ -27,7 +25,7 @@ for (( uid = 500;; --uid )) ; do
           dscl /Local/Default -create Groups/_$username RecordName _$username $username
 
           dscl /Local/Default -create Users/_$username
-          dscl /Local/Default -create Users/_$username NFSHomeDirectory /var/empty
+          dscl /Local/Default -create Users/_$username NFSHomeDirectory /usr/local/
           dscl /Local/Default -create Users/_$username Password \*
           dscl /Local/Default -create Users/_$username PrimaryGroupID $uid
           dscl /Local/Default -create Users/_$username RealName "$realname"
@@ -49,3 +47,5 @@ dscl /Local/Default -read Users/_$username
 echo -e "\nYou can undo the creation of this user by issuing the following commands:\n"
 echo "sudo dscl /Local/Default -delete Users/_$username"
 echo "sudo dscl /Local/Default -delete Groups/_$username"
+echo "\nThe user's home folder will not be automatically deleted, find it here:"
+echo "/usr/local/_$username"
