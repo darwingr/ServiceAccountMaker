@@ -36,6 +36,8 @@ for (( uid = 499;; --uid )) ; do
           dscl /Local/Default -delete /Users/_$username AuthenticationAuthority
           dscl /Local/Default -delete /Users/_$username PasswordPolicyOptions
 
+          dscl /Local/Default -append Groups/_$username GroupMembership _$username
+
           #using -c was critical here, I guess given the specified node.../local/default
           sudo createhomedir -c -u $username
           #alternatively use:

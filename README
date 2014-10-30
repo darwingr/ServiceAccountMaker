@@ -1,6 +1,6 @@
 Usage:
 	chmod 755 mk_service_user.sh
-	sudo mk_service_user.sh newusername
+	sudo ./mk_service_user.sh newusername
 
 Useage Scenario:
 	I want to run some startup services, each as its own user, on Mac OSX(10.10) using launchd from system startup.
@@ -11,6 +11,7 @@ How it works:
 	A uid/gid is assigned starting and descending from 499 (mac daemon user id range = ?-499).
 	Shell access and login is revoked.
 	Password seems removed..
+	User is made a member to group of same name.
 	Creates a home folder in /usr/local/HOME with proper ownership and group permissions.
 
 
